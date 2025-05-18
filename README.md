@@ -1,6 +1,6 @@
-# farmers_webportal
+# AgriConnect
 
-A full-stack web portal designed to help farmers manage resources, access information, and connect with the agricultural community.
+A full-stack application designed to help farmers manage resources, access information, and connect with the agricultural community.
 
 ---
 
