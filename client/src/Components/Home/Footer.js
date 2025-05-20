@@ -38,10 +38,18 @@ function Footer() {
                         <div className="home_footer-col ">
                             <h4>follow us</h4>
                             <div className="social-links ">
-                                <Link to="# "><i className="fab fa-facebook-f "></i></Link>
-                                <Link to="# "><i className="fab fa-twitter "></i></Link>
-                                <Link to="# "><i className="fab fa-instagram "></i></Link>
-                                <Link to="# "><i className="fab fa-linkedin-in "></i></Link>
+                                 <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+                                   <i className="fab fa-facebook "></i>
+                                </a>
+                                 <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer">
+                                   <i className="fab fa-twitter"></i>
+                                </a>
+                                <a href="https://www.instagram.com/ad1tyajk/" target="_blank" rel="noopener noreferrer">
+                                   <i className="fab fa-instagram "></i>
+                                </a>
+                                <a href="https://www.linkedin.com/in/bathinanna/">
+                                <i className="fab fa-linkedin-in "></i>
+                                </a>
                             </div>
                         </div>
                     </div>

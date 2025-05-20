@@ -52,23 +52,28 @@ function AboutUs() {
                         </div>
                         <div className="image-section">
                             <img src="./AboutUs_Images/aboutusimg.jpg" alt="About Us" />
+                            
                         </div>
                     </div>
                 </div>
 
                 <div className="container-1 AboutContainer">
                     <div className="AboutUs_carousel">
-                        <h1>Team Members:</h1>
-                        <div className="AboutUs_carousel__face"><span></span></div>
-                        <div className="AboutUs_carousel__face"></div>
-                       
+                        
+                        <div className="AboutUs_carousel__face">
+                            <img src="./AboutUs_Images/Bathinanna.png" alt="Bathinanna" />
+                        </div>
+                        <div className="AboutUs_carousel__face">
+                            <img src="./AboutUs_Images/jk.png" alt="JK" />
+                        </div>
                     </div>
                 </div>
 
                 <div className="names-div">
                     <div className="names">
-                       
+                        <span>Developed by:</span><br /> 
                         <span>Bathinanna</span><br />
+                         <span>Aditya JK</span><br />
                     </div>
                 </div>
             </div>
