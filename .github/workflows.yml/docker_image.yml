@@ -1,0 +1,91 @@
+name: Build and Push Docker Images (Debug Mode)
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # --- DEBUG: Check secrets loaded (partially masked for safety) ---
+      - name: Debug Secrets (Safe Check)
+        run: |
+          echo "Username starts with: ${DOCKERHUB_USERNAME::2}***"
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+      # --- DEBUG: Manual Docker login test ---
+      - name: Test Docker Login (manual)
+        run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # --- DEBUG: Confirm Docker login status ---
+      - name: Docker Info Check
+        run: docker info
+
+      # --- Log in to Docker Hub (main login step) ---
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # --- Client Image ---
+      - name: Extract metadata for Client image
+        id: meta_client
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-client
+          tags: |
+            type=sha,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}},enable={{is_default_branch}}
+            type=semver,pattern={{major}},enable={{is_default_branch}}
+
+      - name: Build and push Client image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./client
+          push: true
+          tags: ${{ steps.meta_client.outputs.tags }}
+          labels: ${{ steps.meta_client.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # --- Server Image ---
+      - name: Extract metadata for Server image
+        id: meta_server
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-server
+          tags: |
+            type=sha,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}},enable={{is_default_branch}}
+            type=semver,pattern={{major}},enable={{is_default_branch}}
+
+      - name: Build and push Server image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          push: true
+          tags: ${{ steps.meta_server.outputs.tags }}
+          labels: ${{ steps.meta_server.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
