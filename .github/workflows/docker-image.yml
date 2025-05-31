@@ -2,7 +2,9 @@ name: Build and Push Docker Images
 
 on:
   push:
-    branches: [main]
+    branches: [main] # Trigger on pushes to the main branch
+    tags:
+      - 'v*.*.*'    # Trigger on version tags like v1.0.0, v1.2.3, etc.
 
 jobs:
   build-and-push:
@@ -11,6 +13,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for docker/metadata-action to correctly infer tags from Git tags
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -21,16 +25,48 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push client image
+      # --- Client Image ---
+      - name: Extract metadata for Client image
+        id: meta_client
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-client
+          tags: |
+            type=sha,prefix= # Git SHA commit hash
+            type=raw,value=latest,enable={{is_default_branch}} # 'latest' tag for default branch (main)
+            type=semver,pattern={{version}} # For Git tags like v1.2.3 -> 1.2.3
+            type=semver,pattern={{major}}.{{minor}},enable={{is_default_branch}} # For Git tags like v1.2.3 -> 1.2 (on main)
+            type=semver,pattern={{major}},enable={{is_default_branch}} # For Git tags like v1.2.3 -> 1 (on main)
+
+      - name: Build and push Client image
         uses: docker/build-push-action@v5
         with:
           context: ./client
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-client:latest
+          tags: ${{ steps.meta_client.outputs.tags }}
+          labels: ${{ steps.meta_client.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Build and push server image
+      # --- Server Image ---
+      - name: Extract metadata for Server image
+        id: meta_server
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-server
+          tags: |
+            type=sha,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}},enable={{is_default_branch}}
+            type=semver,pattern={{major}},enable={{is_default_branch}}
+
+      - name: Build and push Server image
         uses: docker/build-push-action@v5
         with:
           context: ./server
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-server:latest
+          tags: ${{ steps.meta_server.outputs.tags }}
+          labels: ${{ steps.meta_server.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
