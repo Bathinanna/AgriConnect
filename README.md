@@ -14,6 +14,8 @@ A full-stack application designed to help farmers manage resources, access infor
 - [Folder Structure](#folder-structure)
 - [Contributing](#contributing)
 - [License](#license)
+- [Logging and Monitoring Stack](#logging-and-monitoring-stack)
+- [Docker Images and Deployment](#docker-images-and-deployment)
 
 ---
 
@@ -145,3 +147,27 @@ This project is licensed under the [MIT License](LICENSE).
 ## Contact
 
 For questions or support, contact [Bathinanna](https://github.com/Bathinanna).
+
+---
+
+## Logging and Monitoring Stack
+
+- **Filebeat**: Collects logs from all containers and ships them to Logstash.
+- **Logstash**: Processes and forwards logs to Elasticsearch.
+- **Elasticsearch**: Stores and indexes logs for searching and analysis.
+- **Kibana**: Visualizes and searches logs from Elasticsearch.
+
+### Filebeat Permissions Issue
+If you see an error like:
+```
+Exiting: error loading config file: config file ("filebeat.yml") can only be writable by the owner but the permissions are "-rwxrwxrwx"
+```
+Make sure your `docker-compose.yml` mounts `filebeat.yml` as read-only:
+```yaml
+- ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+```
+
+## Docker Images and Deployment
+
+- Docker images for client and server are built and pushed to Docker Hub automatically via GitHub Actions when you push to the `main` branch.
+- To use these images, update your `docker-compose.yml` to use the `image:` field with the correct Docker Hub username.
