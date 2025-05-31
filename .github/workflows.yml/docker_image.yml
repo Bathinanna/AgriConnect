@@ -1,4 +1,4 @@
-name: Build and Push Docker Images (Debug Mode)
+name: Build and Push Docker Images
 
 on:
   push:
@@ -19,25 +19,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # --- DEBUG: Check secrets loaded (partially masked for safety) ---
+      # Optional debug: show partial username (safe)
       - name: Debug Secrets (Safe Check)
-        run: |
-          echo "Username starts with: ${DOCKERHUB_USERNAME::2}***"
+        run: echo "Username starts with: ${DOCKERHUB_USERNAME::2}***"
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
 
-      # --- DEBUG: Manual Docker login test ---
-      - name: Test Docker Login (manual)
-        run: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      # --- DEBUG: Confirm Docker login status ---
-      - name: Docker Info Check
-        run: docker info
-
-      # --- Log in to Docker Hub (main login step) ---
+      # Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
