@@ -1,11 +1,11 @@
-name: Build and Push Docker Images
+name: Build and Deploy to Azure
 
 on:
   push:
     branches: [main]
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,16 +21,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push client image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./client
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-client:latest
-
       - name: Build and push server image
         uses: docker/build-push-action@v5
         with:
           context: ./server
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-server:latest
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'agri-connect'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          images: '${{ secrets.DOCKERHUB_USERNAME }}/agriconnect-server:latest'
