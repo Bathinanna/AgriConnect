@@ -7,14 +7,14 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: agri-connect    # Replace with your app's name
+  AZURE_WEBAPP_NAME: agri-connect
   AZURE_WEBAPP_PACKAGE_PATH: '.'
   NODE_VERSION: '18.x'
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
 
@@ -39,4 +39,4 @@ jobs:
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} 
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
