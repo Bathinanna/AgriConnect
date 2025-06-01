@@ -17,7 +17,7 @@ const SearchResults = () => {
         Aos.init({ duration: 1500 });
 
         try {
-            fetch('https://fwp.onrender.com/search', {
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/search`, {
                 method: 'POST',
                 mode:'cors',
                 headers: { 'Content-Type': 'application/json' },
@@ -37,7 +37,7 @@ const SearchResults = () => {
         // console.log(prod)
 
         try {
-            const res = await fetch('https://fwp.onrender.com/addToCart', {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/addToCart`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(prod),

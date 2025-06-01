@@ -45,13 +45,13 @@ function App() {
 
 
   useEffect(() => {
-    fetch('https://fwp.onrender.com/Market')
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/Market`)
       .then(res => res.json())
       .then(data => setProdData(data))
       .catch(err => console.log("Error: ", err))
 
 
-    fetch('https://fwp.onrender.com/crops')
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/crops`)
       .then(res => res.json())
       .then(crops => setCropData(crops))
       .catch(err => console.log("Error: ", err))

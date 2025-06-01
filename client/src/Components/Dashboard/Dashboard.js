@@ -18,14 +18,14 @@ const Dashboard = () => {
   }, [url, image])
 
   const getImageName = () => {
-    fetch(`https://fwp.onrender.com/getImageName/${email}`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/getImageName/${email}`)
       .then(res => res.json())
       .then(imgurl => setUrl(imgurl.url))
       .catch(err => console.log(err))
   }
 
   const getCartData = () => {
-    fetch('https://fwp.onrender.com/Cart/' + email)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/Cart/` + email)
       .then(res => res.json())
       .then(dat => setData(dat))
       .catch(err => console.log(err))
@@ -57,7 +57,7 @@ const Dashboard = () => {
     try {
       // await axios.post("https://fwp.onrender.com/uploadprofilepic", formData, {
       const email = localStorage.getItem('email')
-      axios.post("https://fwp.onrender.com/uploadprofilepic/" + email, formData, {
+      axios.post(`${process.env.REACT_APP_BACKEND_URL}/uploadprofilepic/` + email, formData, {
         headers: {
           "Content-type": "multipart/form-data",
         }

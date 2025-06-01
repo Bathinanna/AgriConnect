@@ -21,7 +21,7 @@ const Market = (props) => {
 
         try {
             const email = localStorage.getItem('email')
-            const res = await fetch('https://fwp.onrender.com/addToCart', {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/addToCart`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({prod,email}),

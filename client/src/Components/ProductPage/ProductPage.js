@@ -16,7 +16,7 @@ export default function ProductPage({data}) {
         Aos.init({ duration: 1000 });
 
         try {
-            fetch('https://fwp.onrender.com/productpage/'+id)
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/productpage/`+id)
             .then(res=>res.json())
             .then(results => setProd(results))
             .catch(err => console.log(err)) 

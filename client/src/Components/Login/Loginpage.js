@@ -19,7 +19,7 @@ const SignUp = (props) => {
   }
 
   const onLoginHandler = () => {
-    fetch('https://fwp.onrender.com/login', {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(details),
